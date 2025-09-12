@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>WebSocket Tester</title>
+  <style>
+    body { font-family: sans-serif; margin: 1rem; }
+    #log { white-space: pre-wrap; background: #f0f0f0; padding: 1rem; height: 60vh; overflow-y: scroll; }
+    input, button { font-size: 1rem; padding: 0.5rem; }
+  </style>
+</head>
+<body>
+  <h1>WebSocket Connection Tester</h1>
+  <p>
+    <label>WS URL:&nbsp;
+      <input id="url" size="40" value="ws://127.0.0.1:8000/ws/chat/2/" />
+    </label>
+    <button id="connect">Connect</button>
+    <button id="sendMsg">Send “Hello”</button>
+    <button id="closeConn">Close</button>
+  </p>
+  <div id="log"></div>
+
+  <script>
+    const logEl = document.getElementById('log');
+    function log(msg) {
+      console.log(msg);
+      logEl.textContent += msg + "\n";
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    let ws = null;
+    document.getElementById('connect').onclick = () => {
+      const url = document.getElementById('url').value;
+      if (ws) ws.close();
+      log(`✨ Connecting to ${url}`);
+      ws = new WebSocket(url);
+      ws.onopen    = () => log("✅ Connection OPENED");
+      ws.onmessage = e => log("📨 MESSAGE: " + e.data);
+      ws.onerror   = e => log("❌ ERROR: " + (e.message||e));
+      ws.onclose   = e => log(`🛑 CLOSED (code=${e.code} reason=${e.reason})`);
+    };
+
+    document.getElementById('sendMsg').onclick = () => {
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        log("⚠️ Cannot send, socket not open");
+        return;
+      }
+      const payload = JSON.stringify({ text: "Hello from tester!", ts: Date.now() });
+      log("📤 Sending: " + payload);
+      ws.send(payload);
+    };
+
+    document.getElementById('closeConn').onclick = () => {
+      if (ws) ws.close();
+    };
+  </script>
+</body>
+</html>

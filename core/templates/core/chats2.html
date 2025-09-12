@@ -1,0 +1,761 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatterly - Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#6366f1",
+              secondary: "#8b5cf6",
+              accent: "#06b6d4",
+            },
+            animation: {
+              "slide-in": "slideIn 0.3s ease-out",
+              "fade-in": "fadeIn 0.3s ease-out",
+              "pulse-slow": "pulse 3s ease-in-out infinite",
+              'slide-up': 'slideUp 0.3s ease-out forwards',
+            },
+            keyframes: {
+              slideIn: {
+                "0%": { transform: "translateX(-100%)", opacity: "0" },
+                "100%": { transform: "translateX(0)", opacity: "1" },
+              },
+              fadeIn: {
+                "0%": { opacity: "0" },
+                "100%": { opacity: "1" },
+              },
+              slideUp: {
+                    '0%': { transform: 'translateY(20px)', opacity: '0' },
+                    '100%': { transform: 'translateY(0)', opacity: '1' },
+                }
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="{% static 'core/css/chat.css' %}">
+  </head>
+  <body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-cyan-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200 fixed w-full top-0 z-50">
+      <div class="px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <div class="flex items-center space-x-4">
+            <button id="sidebarToggle"
+                    class="lg:hidden text-gray-500 hover:text-gray-700 p-2">
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <i class="fas fa-comments text-white text-sm"></i>
+              </div>
+              <span class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Chatterly</span>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <button class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+              <i class="fas fa-search"></i>
+            </button>
+            {% comment %} <button class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+              <i class="fas fa-bell"></i>
+            </button> {% endcomment %}
+            <button id="profileBtn"
+                    class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+              <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                <i class="fas fa-user text-white text-sm"></i>
+              </div>
+              <span class="hidden sm:block text-sm font-medium text-gray-700">John Doe</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="flex h-screen pt-16">
+      <!-- Sidebar -->
+      <div id="sidebar"
+           class="sidebar-transition w-80 bg-white border-r border-gray-200 flex flex-col fixed lg:relative h-full z-40 -translate-x-full lg:translate-x-0">
+        <div class="p-6 border-b border-gray-200">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Messages</h2>
+          <div class="relative mb-4">
+            <input type="text"
+                   placeholder="Search conversations..."
+                   class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" />
+            <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+          </div>
+          <!-- New Action Buttons -->
+          <div class="flex space-x-2">
+            <button id="addUserBtn"
+                    class="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-2 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105 text-sm">
+              <i class="fas fa-user-plus mr-2"></i>Add User
+            </button>
+            <button id="createGroupBtn"
+                    onclick="openModal()"
+                    class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-2 px-3 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105 text-sm">
+              <i class="fas fa-users mr-2"></i>Create Group
+            </button>
+          </div>
+        </div>
+        <!-- Chat List -->
+        <div class="flex-1 overflow-y-auto chat-scroll min-h-0">
+          <div id="contactsList" class="p-4 space-y-2">
+            <!-- Active Chat -->
+            {% comment %} <div class="chat-item flex items-center space-x-3 p-3 rounded-lg bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 cursor-pointer active" data-chat="sarah">
+              <div class="relative">
+                <div class="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center">
+                  <i class="fas fa-user text-white"></i>
+                </div>
+                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-semibold text-gray-900 truncate">
+                    Sarah Johnson
+                  </h3>
+                  <span class="text-xs text-gray-500">2:30 PM</span>
+                </div>
+                <p class="text-sm text-gray-600 truncate">
+                  Hey! How's your project going? 🚀
+                </p>
+              </div> 
+            </div> {% endcomment %}
+            <!-- Other Chats -->
+            {% comment %} <div class="chat-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors" data-chat="mike">
+              <div class="relative">
+                <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+                  <i class="fas fa-user text-white"></i>
+                </div>
+                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-gray-400 rounded-full border-2 border-white"></div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-semibold text-gray-900 truncate">
+                    Mike Wilson
+                  </h3>
+                  <span class="text-xs text-gray-500">1:45 PM</span>
+                </div>
+                <p class="text-sm text-gray-600 truncate">
+                  Thanks for the quick response!
+                </p>
+              </div>
+            </div> {% endcomment %}
+            {% comment %} <div class="chat-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors" data-chat="team">
+              <div class="relative">
+                <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                  <i class="fas fa-users text-white"></i>
+                </div>
+                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white flex items-center justify-center">
+                  <span class="text-xs text-white font-bold">3</span>
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-semibold text-gray-900 truncate">
+                    Team Project
+                  </h3>
+                  <span class="text-xs text-gray-500">12:30 PM</span>
+                </div>
+                <p class="text-sm text-gray-600 truncate">
+                  Alex: Let's schedule a meeting for tomorrow
+                </p>
+              </div>
+            </div>  {% endcomment %}
+            {% comment %} <div class="chat-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors" data-chat="emma">
+              <div class="relative">
+                <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                  <i class="fas fa-user text-white"></i>
+                </div>
+                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-semibold text-gray-900 truncate">
+                    Emma Davis
+                  </h3>
+                  <span class="text-xs text-gray-500">11:15 AM</span>
+                </div>
+                <p class="text-sm text-gray-600 truncate">
+                  Perfect! See you then 😊
+                </p>
+              </div>
+            </div>   {% endcomment %}
+          </div>
+        </div>
+      </div>
+      <!-- Main Chat Area -->
+      <div id="mainChatArea" class="hidden flex-1 flex flex-col">
+        <!-- Chat Header -->
+        <div class="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div id="currentChatAvatar"
+                 class="w-10 h-10 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center">
+              <i class="fas fa-user text-white"></i>
+            </div>
+            <div>
+              <h2 id="currentChatName" class="font-semibold text-gray-900">Sarah Johnson</h2>
+              <p id="currentChatStatus" class="text-sm text-green-600">Online</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+              <i class="fas fa-phone"></i>
+            </button>
+            <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+              <i class="fas fa-video"></i>
+            </button>
+            <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+              <i class="fas fa-ellipsis-v"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Messages Area -->
+        <div id="messagesContainer"
+             class="flex-1 overflow-y-auto chat-scroll p-4 space-y-4">
+          <!-- Received Message -->
+          {% comment %} <div class="flex items-start space-x-2">
+            <div class="w-8 h-8 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-user text-white text-xs"></i>
+            </div>
+            <div class="message-bubble bg-white rounded-2xl rounded-bl-md px-4 py-2 shadow-sm">
+              <p class="text-gray-800">Hey! How's your project going? 🚀</p>
+              <span class="text-xs text-gray-500 mt-1 block">2:30 PM</span>
+            </div>
+          </div> {% endcomment %}
+          <!-- Sent Message -->
+          {% comment %} <div class="flex items-start space-x-2 justify-end">
+            <div class="message-bubble bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl rounded-br-md px-4 py-2 shadow-sm">
+              <p>Amazing! Just launched the web version ✨</p>
+              <span class="text-xs opacity-80 mt-1 block">2:32 PM</span>
+            </div>
+          </div> {% endcomment %}
+          <!-- Received Message -->
+          {% comment %} <div class="flex items-start space-x-2">
+            <div class="message-bubble bg-white rounded-2xl rounded-bl-md px-4 py-2 shadow-sm">
+              <p class="text-gray-800">Love that it works in the browser! 🎉</p>
+              <span class="text-xs text-gray-500 mt-1 block">2:33 PM</span>
+            </div>
+          </div> {% endcomment %}
+          <!-- Sent Message -->
+          {% comment %} <div class="flex items-start space-x-2 justify-end">
+            <div class="w-8 h-8 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-user text-white text-xs"></i>
+            </div>
+            <div class="message-bubble bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl rounded-br-md px-4 py-2 shadow-sm">
+              <p>That was the goal! No more app installations needed 🎯</p>
+              <span class="text-xs opacity-80 mt-1 block">2:35 PM</span>
+            </div>
+          </div> {% endcomment %}
+          <div id="typingIndicator" class="hidden flex items-start space-x-2">
+            <div class="w-8 h-8 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-user text-white text-xs"></i>
+            </div>
+            <div class="bg-white rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
+              <div class="flex space-x-1">
+                <div class="typing-indicator"></div>
+                <div class="typing-indicator"></div>
+                <div class="typing-indicator"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% comment %} <!-- Message Input -->
+                                                  <div class="bg-white border-t border-gray-200 p-4">
+                                                    <div class="flex items-center space-x-3">
+                                                            <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                                                  <i class="fas fa-plus"></i>
+                                    </button>
+                                    <div class="flex-1 relative">
+                                      <input id="messageInput"
+                                             type="text"
+                                             placeholder="Type a message..."
+                                             class="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" />
+                                      <button id="emojiBtn"
+                                              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-smile"></i>
+              </button>
+            
+
+
+
+
+
+            <!-- Emoji Picker -->
+<div id="emojiPicker"
+     class="emoji-picker hidden absolute bottom-20 right-4 w-80 h-96 bg-white rounded-2xl border border-gray-200 z-50 animate-slide-up">
+                <!-- Header -->
+                <div class="p-4 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-800">Emojis</h3>
+            <button id="closeEmojiPicker"
+                    class="text-gray-500 hover:text-gray-700 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="p-3 border-b border-gray-200">
+        <div class="relative">
+            <input id="emojiSearch"
+                   type="text"
+                   placeholder="Search emojis..."
+                   class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-sm" />
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="flex border-b border-gray-200 bg-gray-50">
+        <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 hover:text-indigo-600 transition-colors active"
+                data-category="recent">
+            <i class="fas fa-clock"></i>
+        </button>
+        <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 hover:text-indigo-600 transition-colors"
+                data-category="smileys">
+            <i class="fas fa-smile"></i>
+        </button>
+        <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 hover:text-indigo-600 transition-colors"
+                data-category="people">
+            <i class="fas fa-user"></i>
+        </button>
+        <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 hover:text-indigo-600 transition-colors"
+                data-category="animals">
+            <i class="fas fa-paw"></i>
+        </button>
+        <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 hover:text-indigo-600 transition-colors"
+                data-category="food">
+            <i class="fas fa-utensils"></i>
+        </button>
+        <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 hover:text-indigo-600 transition-colors"
+                data-category="travel">
+            <i class="fas fa-plane"></i>
+        </button>
+        <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 hover:text-indigo-600 transition-colors"
+                data-category="objects">
+            <i class="fas fa-lightbulb"></i>
+        </button>
+        <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 hover:text-indigo-600 transition-colors"
+                data-category="symbols">
+            <i class="fas fa-heart"></i>
+        </button>
+    </div>
+
+    <!-- Emoji Content -->
+    <div id="emojiContent" class="flex-1 overflow-y-auto scrollbar-hide p-2">
+        <div id="emojiGrid" class="grid grid-cols-8 gap-1">
+            <!-- Emojis will be populated here -->
+        </div>
+    </div>
+</div>
+</div> {% endcomment %}
+<div class="bg-white border-t border-gray-200 p-4 relative">
+  <div class="flex items-center space-x-3">
+    <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+      <i class="fas fa-plus"></i>
+    </button>
+    <div class="flex-1 relative">
+      <input id="messageInput"
+             type="text"
+             placeholder="Type a message..."
+             class="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" />
+      <button id="emojiBtn"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+        <i class="fas fa-smile"></i>
+      </button>
+    </div>
+    <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+      <i class="fas fa-microphone"></i>
+    </button>
+    <button id="sendBtn"
+            class="p-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+      <i class="fas fa-paper-plane"></i>
+    </button>
+  </div>
+  <!-- Emoji Picker -->
+  <div id="emojiPicker"
+       class="emoji-picker hidden absolute bottom-full right-4 mb-2 w-80 h-80 bg-white rounded-2xl border border-gray-200 shadow-xl z-50 animate-slide-up">
+    <!-- Header -->
+    <div class="p-4 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-800">Emojis</h3>
+        <button id="closeEmojiPicker"
+                class="text-gray-500 hover:text-gray-700 transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Search Bar -->
+    <div class="p-3 border-b border-gray-200">
+      <div class="relative">
+        <input id="emojiSearch"
+               type="text"
+               placeholder="Search emojis..."
+               class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-sm" />
+        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+      </div>
+    </div>
+    <!-- Categories -->
+    <div class="flex border-b border-gray-200 bg-gray-50">
+      <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 transition-colors active"
+              data-category="recent">
+        <i class="fas fa-clock"></i>
+      </button>
+      <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 transition-colors"
+              data-category="smileys">
+        <i class="fas fa-smile"></i>
+      </button>
+      <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 transition-colors"
+              data-category="people">
+        <i class="fas fa-user"></i>
+      </button>
+      <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 transition-colors"
+              data-category="animals">
+        <i class="fas fa-paw"></i>
+      </button>
+      <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 transition-colors"
+              data-category="food">
+        <i class="fas fa-utensils"></i>
+      </button>
+      <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 transition-colors"
+              data-category="travel">
+        <i class="fas fa-plane"></i>
+      </button>
+      <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 transition-colors"
+              data-category="objects">
+        <i class="fas fa-lightbulb"></i>
+      </button>
+      <button class="category-tab flex-1 py-2 px-1 text-xs font-medium text-gray-600 transition-colors"
+              data-category="symbols">
+        <i class="fas fa-heart"></i>
+      </button>
+    </div>
+    <!-- Emoji Content -->
+    <div id="emojiContent"
+         class="flex-1 overflow-y-auto custom-scrollbar p-2"
+         style="height: 200px">
+      <div id="emojiGrid" class="grid grid-cols-8 gap-1">
+        <!-- Emojis will be populated here -->
+      </div>
+    </div>
+  </div>
+</div>
+{% comment %} <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+              <i class="fas fa-microphone"></i>
+            </button>
+            <button id="sendBtn" class="p-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+              <i class="fas fa-paper-plane"></i>
+</button> {% endcomment %}
+
+</div>
+<!-- Empty State (shown by default) -->
+<div id="emptyState"
+     class="flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-cyan-50 p-8 text-center">
+  <div class="w-24 h-24 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mb-6 shadow-lg">
+    <i class="fas fa-comments text-white text-3xl"></i>
+  </div>
+  <h2 class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+    Welcome to Chatterly
+  </h2>
+  <p class="text-gray-600 mb-8 max-w-md leading-relaxed">
+    Select a conversation from the sidebar to start chatting, or create a
+    new conversation to connect with friends and colleagues.
+  </p>
+  <div class="flex space-x-4">
+    <button class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 px-6 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+      <i class="fas fa-user-plus mr-2"></i>Add New Contact
+    </button>
+    <button class="border border-indigo-300 text-indigo-600 py-3 px-6 rounded-lg hover:bg-indigo-50 transition-colors">
+      <i class="fas fa-users mr-2"></i>Create Group
+    </button>
+  </div>
+</div>
+</div>
+</div>
+{% comment %} <!-- Empty State (shown by default) -->
+<div id="emptyState"
+     class="flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-cyan-50 p-8 text-center">
+  <div class="w-24 h-24 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mb-6 shadow-lg">
+    <i class="fas fa-comments text-white text-3xl"></i>
+  </div>
+  <h2 class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+    Welcome to Chatterly
+  </h2>
+  <p class="text-gray-600 mb-8 max-w-md leading-relaxed">
+    Select a conversation from the sidebar to start chatting, or create a
+    new conversation to connect with friends and colleagues.
+  </p>
+  <div class="flex space-x-4">
+    <button class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 px-6 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+      <i class="fas fa-user-plus mr-2"></i>Add New Contact
+    </button>
+    <button class="border border-indigo-300 text-indigo-600 py-3 px-6 rounded-lg hover:bg-indigo-50 transition-colors">
+      <i class="fas fa-users mr-2"></i>Create Group
+    </button>
+  </div>
+</div> {% endcomment %}
+<!-- Profile Settings Modal -->
+<div id="profileModal"
+     class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto no-scrollbar">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold text-gray-900">Profile Settings</h3>
+        <button id="closeProfile"
+                class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <!-- Profile Picture -->
+      <div class="text-center mb-6">
+        <div class="relative inline-block">
+          <div id="profilePicture"
+               class="w-24 h-24 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 cursor-pointer hover:shadow-lg transition-all duration-300 group relative"
+               onclick="document.getElementById('profileImageInput').click()">
+            <i id="cameraIcon"
+               class="fas fa-camera text-white text-2xl group-hover:scale-110 transition-transform duration-300"></i>
+            <!-- Remove button (hidden by default) -->
+            <button type="button"
+                    id="removeProfileBtn"
+                    onclick="event.stopPropagation(); removeProfilePicture()"
+                    class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center text-white text-xs transition-colors hidden">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <input type="file"
+                 id="profileImageInput"
+                 accept="image/*"
+                 class="hidden"
+                 onchange="handleProfileImageChange(event)" />
+        </div>
+        <br>
+        <button type="button"
+                onclick="document.getElementById('profileImageInput').click()"
+                class="text-indigo-600 hover:text-indigo-800 font-medium text-sm transition-colors">
+          Change Profile Picture
+        </button>
+      </div>
+      <!-- Profile Form -->
+      <form class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+          <input type="text"
+                 value=""
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-colors" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+          <select class="status-option w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+            <option>Available</option>
+            <option>Busy</option>
+            <option>Do Not Disturb</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">About</label>
+          <textarea rows="3"
+                    placeholder="Tell others about yourself..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-colors"></textarea>
+        </div>
+        <!-- Notification Settings -->
+        <div class="space-y-3 pt-4 border-t border-gray-200">
+          <h4 class="font-medium text-gray-900">Notifications</h4>
+          {% comment %} <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-700">Message notifications</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer" checked />
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+          </div> {% endcomment %}
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-700">Show online status</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" class="sr-only peer" checked />
+              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600">
+              </div>
+            </label>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-700">Show last seen status</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" class="sr-only peer" checked />
+              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600">
+              </div>
+            </label>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-700">Show typing status</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" class="sr-only peer" checked />
+              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600">
+              </div>
+            </label>
+          </div>
+        </div>
+        <!-- Action Buttons -->
+        <div class="flex space-x-3 pt-6">
+          <button type="button"
+                  class="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-4 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+            Save Changes
+          </button>
+          <button type="button"
+                  class="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Sidebar Overlay for Mobile -->
+<div id="sidebarOverlay"
+     class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+<!-- 3. Add User Modal -->
+<div id="addUserModal"
+     class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold text-gray-900">Add New User</h3>
+        <button id="closeAddUser"
+                class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <!-- Add this div inside your modal, before the form -->
+      <div id="messageContainer" class="mb-4 hidden"></div>
+      <form id="addUserForm" class="space-y-4" novalidate>
+        {% csrf_token %}
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Email adress</label>
+          <input type="email"
+                 id="userEmail"
+                 placeholder="Enter email address"
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                 required />
+        </div>
+        <div id="emailError" class="text-red-500 text-sm hidden">
+          <i class="fas fa-exclamation-circle mr-1"></i>
+          <span>Please enter a valid email address</span>
+        </div>
+        <div class="flex space-x-3 pt-4">
+          <button type="submit"
+                  class="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-4 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+            Add User
+          </button>
+          <button type="button"
+                  id="cancelAddUser"
+                  class="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Modal Container -->
+<div id="groupModal"
+     class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+    <!-- Screen 1: User Selection -->
+    <div id="userSelectionScreen" class="p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-2xl font-bold text-gray-900">Select Users</h3>
+        <button onclick="closeModal()"
+                class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="mb-6">
+        <div id="usersList"
+             class="user-list-container space-y-2 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-3 smooth-scroll">
+          <!-- Users will be populated here -->
+        </div>
+      </div>
+      <div class="flex space-x-3">
+        <button onclick="saveUserSelection()"
+                class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-2 px-4 rounded-lg hover:bg-green-600">
+          Save
+        </button>
+        <button onclick="closeModal()"
+                class="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50">
+          Cancel
+        </button>
+      </div>
+    </div>
+    <!-- Screen 2: Create Group -->
+    <div id="createGroupScreen" class="p-6 hidden">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center space-x-3">
+          <button onclick="goBackToUserSelection()"
+                  class="text-gray-500 hover:text-gray-700 p-1 rounded-lg hover:bg-gray-100">
+            <i class="fas fa-arrow-left"></i>
+          </button>
+          <h3 class="text-2xl font-bold text-gray-900">Create Group</h3>
+        </div>
+        <button onclick="closeModal()"
+                class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form onsubmit="createGroup(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Group Name</label>
+          <input type="text"
+                 id="groupName"
+                 placeholder="Enter group name"
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                 required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+          <textarea id="groupDescription"
+                    rows="3"
+                    placeholder="Enter group description"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Selected Members</label>
+          <div id="selectedMembersList"
+               class="selected-members-container border border-gray-200 rounded-lg p-3 min-h-[100px] max-h-40 overflow-y-auto smooth-scroll">
+            <!-- Selected members will be shown here -->
+          </div>
+        </div>
+        <div class="flex space-x-3 pt-4">
+          <button type="submit"
+                  class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-2 px-4 rounded-lg hover:shadow-lg transition-all">
+            Create Group
+          </button>
+          <button type="button"
+                  onclick="closeModal()"
+                  class="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/libsodium-wrappers/0.4.8/sodium.min.js"></script>
+<!-- in your base template, before your own JS -->
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.min.js"></script> {% endcomment %}
+<!-- before your own chat JS -->
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.umd.min.js"></script>  {% endcomment %}
+<!-- head (or right before your own chat_emojis.js) -->
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.umd.min.js"></script> {% endcomment %}
+<!-- load the UMD build (v4.x) -->
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2"></script> {% endcomment %}
+{% comment %} <script src="https://unpkg.com/@joeattardi/emoji-button@4/dist/index.umd.min.js"></script> {% endcomment %}
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/picmo"></script> {% endcomment %}
+<script src="{% static 'core/js/chat.js' %}"></script>
+<script src="{% static 'core/js/chat_addUserModel.js' %}"></script>
+<script src="{% static 'core/js/chat_messageArea.js' %}"></script>
+<script src="{% static 'core/js/chat_profile.js' %}"></script>
+<script src="{% static 'core/js/chat_emojis.js' %}"></script>
+</body>
+</html>

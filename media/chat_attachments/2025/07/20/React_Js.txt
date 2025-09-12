@@ -1,0 +1,109 @@
+React js (reactjs.org official documentation) :
+
+
+(1) install node js : we can run JavaScript without support of browser on own machine.
+                    : npm installed already in node js.
+
+
+(2) npm : File C:\Program Files\nodejs\npm.ps1 
+    cannot be loaded because running scripts is disabled on this system.
+    For more information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170. 
+    At line:1 char:1 + npm --version how to solve this error
+
+    run window power shell as administrator 
+
+    run this command : Set-ExecutionPolicy RemoteSigned
+
+    problem is solved.
+
+
+
+(3) Extension downloaded in vs code : 
+      
+    code runner , thunder client , ES7 React/Redux/GraphQL/React-Native snippets , Bracket Pair Color DLW 
+    , Auto Rename Tag , Live Server , Prettier - Code formatter 
+
+
+
+(4) what is npm? why we used?
+
+
+(5) what is npx? why we used?
+
+
+(6) what is component based architecture?
+
+
+(7) commands that need to create basic structure of react app : 
+    
+    --> npm install create-react-app 
+    
+    --> npm install -g create-react-app
+
+    --> npx create-react-app .
+
+    --> npx create-react-app application_name
+    
+
+
+(8) learn basic folder structure of react app 
+    understanding about all files and folders
+    (mainly learn about public , src folder)
+
+
+(9) terminologies : components , props , state learn 
+
+
+(10) what json file and what is the use of this and why it is used ?
+
+
+(11) what is populate?
+
+
+(12) what is local host and port number and why it is used ?
+
+
+(13) which concepts we have to learn in JavaScript for react js.
+
+-->  variable declaration and definition(let , var , const)
+-->  console.log()
+-->  datatypes in js(numbers , objects , Booleans , string , undefined , null)
+-->  functions(all types of functions) , functions calling , arrow function 
+-->  object definition and declaration and how to access values
+-->  function within object
+-->  how to align string with number in console.log()
+-->  Events and Event listener 
+-->  alert() arguments and it's return value A, confirm() arguments and it's return value
+-->  string methods inbuilt in js
+-->  numbers methods inbuilt in js
+-->  arrays in js , array iteration loop , other loops , forEach loop
+-->  dates
+-->  conditions , switch , break , continue
+-->  "use strict" mode 
+-->  this and window object 
+-->  callback , promises , setTimeout()
+-->  asynchronous JavaScript
+-->  how to import file in js
+
+
+(14) what is function based component and class based components ?
+
+
+(15) what is utility meaning ?
+
+
+(16) what is jsx ? why we used ?
+
+-->  what is jsx fragment or we used div ? why we used ? 
+
+-->  
+
+
+
+(17) change setting in vs code >> Emmet abbreviation
+
+-->  we can change this setting in setting.json file in the form of (key : value) pair 
+
+
+(18) what is rendering ?
+

@@ -1,0 +1,511 @@
+{% comment %} <!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat – Chatterly</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
+</head>
+<body class="bg-gray-50 h-screen flex overflow-hidden">
+  <!-- Sidebar -->
+  <aside class="bg-white w-20 flex flex-col items-center py-6 border-r border-gray-200">
+    <!-- Logo -->
+    <div class="mb-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 16v-8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h4l3 3 3-3h4a2 2 0 002-2z" />
+      </svg>
+    </div>
+    <!-- Nav Icons -->
+    <nav class="flex-1 flex flex-col justify-center gap-8">
+      <button class="text-indigo-500 hover:text-indigo-700 transition text-2xl"><i class="fa-solid fa-user"></i></button>
+      <button class="text-indigo-500 hover:text-indigo-700 transition text-2xl"><i class="fa-solid fa-gear"></i></button>
+      <button class="text-indigo-500 hover:text-indigo-700 transition text-2xl"><i class="fa-solid fa-sign-out-alt"></i></button>
+    </nav>
+  </aside>
+
+  <!-- Main area -->
+  <div class="flex-1 flex">
+    <!-- User list panel -->
+    <div class="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <!-- Search -->
+      <div class="p-4 border-b border-gray-200">
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <input type="text" placeholder="Search by name or phone" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+        </div>
+      </div>
+      <!-- Users -->
+      <ul class="flex-1 overflow-y-auto">
+        {% for user in users %}
+        <li class="flex items-center p-4 hover:bg-gray-50 cursor-pointer">
+          <img src="{{ user.avatar_url }}" alt="Avatar" class="w-10 h-10 rounded-full mr-3">
+          <div class="flex-1">
+            <p class="font-medium text-gray-900">{{ user.name }}</p>
+            <p class="text-sm text-gray-500 truncate">{{ user.last_message }}</p>
+          </div>
+          <span class="text-xs text-gray-400">{{ user.last_time }}</span>
+        </li>
+        {% empty %}
+        <li class="p-4 text-center text-gray-500">No contacts found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Chat panel -->
+    <div class="flex-1 flex flex-col bg-gray-100">
+      {% if selected_user %}
+      <!-- Chat header -->
+      <div class="p-4 bg-white border-b border-gray-200 flex items-center">
+        <img src="{{ selected_user.avatar_url }}" alt="Avatar" class="w-10 h-10 rounded-full mr-3">
+        <h3 class="font-semibold text-gray-900">{{ selected_user.name }}</h3>
+      </div>
+      <!-- Messages -->
+      <div class="flex-1 p-4 overflow-y-auto space-y-4">
+        {% for msg in messages %}
+          <div class="flex {% if msg.incoming %}justify-start{% else %}justify-end{% endif %}">
+            <div class="max-w-xs bg-white p-3 rounded-lg shadow">
+              <p class="text-sm text-gray-800">{{ msg.text }}</p>
+              <span class="text-xs text-gray-400 block mt-1">{{ msg.time }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <!-- Message input -->
+      <div class="p-4 bg-white border-t border-gray-200">
+        <div class="flex items-center">
+          <input type="text" placeholder="Type a message..." class="flex-1 pl-4 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+          <button class="ml-3 text-indigo-600 hover:text-indigo-800 transition"><i class="fa-solid fa-paper-plane text-xl"></i></button>
+        </div>
+      </div>
+      {% else %}
+      <!-- Placeholder -->
+      <div class="flex-1 flex items-center justify-center">
+        <div class="text-center">
+          <h2 class="text-2xl font-semibold text-gray-400">Select a chat to start messaging</h2>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html> {% endcomment %}
+
+
+
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat Demo – Chatterly</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
+</head>
+<body class="bg-gray-50 h-screen flex overflow-hidden">
+  <!-- Sidebar -->
+  <aside class="bg-white w-20 flex flex-col items-center py-6 border-r border-gray-200">
+    <div class="mb-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 16v-8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2h4l3 3 3-3h4a2 2 0 002-2z" />
+      </svg>
+    </div>
+    <nav class="flex-1 flex flex-col justify-center gap-8">
+      <button class="text-indigo-500 hover:text-indigo-700 transition text-2xl"><i class="fa-solid fa-user"></i></button>
+      <button class="text-indigo-500 hover:text-indigo-700 transition text-2xl"><i class="fa-solid fa-gear"></i></button>
+      <button class="text-indigo-500 hover:text-indigo-700 transition text-2xl"><i class="fa-solid fa-sign-out-alt"></i></button>
+    </nav>
+  </aside>
+
+  <div class="flex-1 flex">
+    <!-- User list panel -->
+    <div class="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <div class="p-4 border-b border-gray-200">
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <input id="search" type="text" placeholder="Search by name or phone" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+        </div>
+      </div>
+      <ul id="userList" class="flex-1 overflow-y-auto">
+        <li data-user="demo" class="user-item flex items-center p-4 hover:bg-gray-50 cursor-pointer">
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Demo User" class="w-10 h-10 rounded-full mr-3">
+          <div class="flex-1">
+            <p class="font-medium text-gray-900">Demo User</p>
+            <p class="text-sm text-gray-500 truncate">Hello! This is a demo.</p>
+          </div>
+          <span class="text-xs text-gray-400">Just now</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Chat panel -->
+    <div class="flex-1 flex flex-col bg-gray-100">
+      <div id="chatHeader" class="p-4 bg-white border-b border-gray-200 flex items-center hidden">
+        <img id="chatAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full mr-3">
+        <h3 id="chatName" class="font-semibold text-gray-900"></h3>
+      </div>
+      <div id="chatPlaceholder" class="flex-1 flex items-center justify-center">
+        <h2 class="text-2xl font-semibold text-gray-400">Select a chat to start messaging</h2>
+      </div>
+      <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-4 hidden"></div>
+      <div id="chatInput" class="p-4 bg-white border-t border-gray-200 hidden">
+        <div class="flex items-center">
+          <input type="text" placeholder="Type a message..." class="flex-1 pl-4 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+          <button class="ml-3 text-indigo-600 hover:text-indigo-800 transition"><i class="fa-solid fa-paper-plane text-xl"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const demoMessages = [
+      { incoming: true, text: 'Hi there!', time: '10:00 AM' },
+      { incoming: false, text: 'Hello! How can I help you?', time: '10:01 AM' },
+      { incoming: true, text: 'Just testing the chat UI.', time: '10:02 AM' }
+    ];
+    document.querySelectorAll('.user-item').forEach(item => {
+      item.addEventListener('click', () => {
+        // Hide placeholder
+        document.getElementById('chatPlaceholder').classList.add('hidden');
+        // Show header, messages, input
+        document.getElementById('chatHeader').classList.remove('hidden');
+        document.getElementById('chatMessages').classList.remove('hidden');
+        document.getElementById('chatInput').classList.remove('hidden');
+        // Populate header
+        document.getElementById('chatAvatar').src = item.querySelector('img').src;
+        document.getElementById('chatName').textContent = item.querySelector('p').textContent;
+        // Populate messages
+        const msgContainer = document.getElementById('chatMessages');
+        msgContainer.innerHTML = '';
+        demoMessages.forEach(msg => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'flex ' + (msg.incoming ? 'justify-start' : 'justify-end');
+          const bubble = document.createElement('div');
+          bubble.className = 'max-w-xs bg-white p-3 rounded-lg shadow';
+          bubble.innerHTML = `<p class="text-sm text-gray-800">${msg.text}</p><span class="text-xs text-gray-400 block mt-1">${msg.time}</span>`;
+          wrapper.appendChild(bubble);
+          msgContainer.appendChild(wrapper);
+        });
+      });
+    });
+  </script>
+</body>
+</html> {% endcomment %}
+
+
+
+
+
+
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chatterly – Secure 1:1 Chat</title>
+
+  <!-- Tailwind & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous"
+  />
+
+  <!-- libsodium.js for decryption -->
+  <script src="https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.9/dist/min/libsodium-wrappers.min.js"></script>
+</head>
+<body class="bg-gray-50 h-screen flex overflow-hidden">
+
+  <!-- Sidebar (omitted for brevity) … -->
+
+  <div class="flex-1 flex">
+    <!-- User list panel (simplified) -->
+    <div class="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <div class="p-4 border-b border-gray-200">
+        <input id="search" type="text" placeholder="Search…" class="w-full pl-3 py-2 border rounded"/>
+      </div>
+      <ul id="userList" class="flex-1 overflow-y-auto">
+        <!-- Example user; in real app render dynamically -->
+        <li
+          data-user-id="42"
+          data-avatar="https://randomuser.me/api/portraits/men/32.jpg"
+          data-name="Demo User"
+          class="user-item flex items-center p-4 hover:bg-gray-50 cursor-pointer"
+        >
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-10 h-10 rounded-full mr-3"/>
+          <div class="flex-1">
+            <p class="font-medium">Demo User</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Chat panel -->
+    <div class="flex-1 flex flex-col bg-gray-100">
+      <!-- Header -->
+      <div id="chatHeader" class="p-4 bg-white border-b hidden flex items-center">
+        <img id="chatAvatar" class="w-10 h-10 rounded-full mr-3"/>
+        <h3 id="chatName" class="font-semibold"></h3>
+      </div>
+
+      <!-- Messages -->
+      <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-4"></div>
+
+      <!-- Input -->
+      <div id="chatInput" class="p-4 bg-white border-t hidden">
+        <div class="flex items-center">
+          <input id="messageInput" type="text" placeholder="Type a message…"
+            class="flex-1 pl-4 py-2 border rounded-full focus:outline-none"/>
+          <button id="sendBtn" class="ml-3 text-indigo-600 text-2xl">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (async () => {
+    await sodium.ready;
+
+    const userList = document.getElementById('userList');
+    const header    = document.getElementById('chatHeader');
+    const avatarEl  = document.getElementById('chatAvatar');
+    const nameEl    = document.getElementById('chatName');
+    const messagesEl= document.getElementById('chatMessages');
+    const inputWrap = document.getElementById('chatInput');
+    const input     = document.getElementById('messageInput');
+    const sendBtn   = document.getElementById('sendBtn');
+
+    let box, ws;
+
+    userList.addEventListener('click', async e => {
+      const li = e.target.closest('.user-item');
+      if (!li) return;
+
+      // 1) Show header & input
+      avatarEl.src = li.dataset.avatar;
+      nameEl.textContent = li.dataset.name;
+      header.classList.remove('hidden');
+      inputWrap.classList.remove('hidden');
+      messagesEl.innerHTML = '';
+
+      const otherId = li.dataset.userId;
+
+      // 2) Fetch chat history & key
+      const resp = await fetch(`/chat/api/with/${otherId}/`, { credentials: 'same-origin' });
+      const { key, messages } = await resp.json();
+
+      // 3) Prepare SecretBox
+      const keyBytes = sodium.from_base64(key, sodium.base64_variants.ORIGINAL);
+      box = sodium.crypto_secretbox;
+
+      // 4) Decrypt & render history
+      messages.forEach(m => {
+        const cipherBytes = sodium.from_base64(m.cipher, sodium.base64_variants.ORIGINAL);
+        const nonce = cipherBytes.slice(0, sodium.crypto_secretbox_NONCEBYTES);
+        const ct    = cipherBytes.slice(nonce.length);
+        const pt    = sodium.crypto_secretbox_open_easy(ct, nonce, keyBytes);
+        appendMessage(
+          m.sender == Number(otherId),
+          sodium.to_string(pt)
+        );
+      });
+
+      // 5) Open WebSocket
+      ws = new WebSocket(`ws://${window.location.host}/ws/chat/${otherId}/`);
+      ws.onmessage = e => {
+        const { cipher, sender } = JSON.parse(e.data);
+        const cb = sodium.from_base64(cipher, sodium.base64_variants.ORIGINAL);
+        const nonce = cb.slice(0, sodium.crypto_secretbox_NONCEBYTES);
+        const ct    = cb.slice(nonce.length);
+        const pt    = sodium.crypto_secretbox_open_easy(ct, nonce, keyBytes);
+        appendMessage(sender == Number(otherId), sodium.to_string(pt));
+      };
+    });
+
+    sendBtn.addEventListener('click', () => {
+      const text = input.value.trim();
+      if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
+      ws.send(JSON.stringify({ text, ts: Date.now() }));
+      appendMessage(false, text);
+      input.value = '';
+    });
+
+    function appendMessage(incoming, text) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex ' + (incoming ? 'justify-start' : 'justify-end');
+      const bubble = document.createElement('div');
+      bubble.className = 'max-w-xs bg-white p-3 rounded-lg shadow';
+      bubble.innerHTML = `<p class="text-sm">${text}</p>`;
+      wrapper.appendChild(bubble);
+      messagesEl.appendChild(wrapper);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+  })();
+  </script>
+</body>
+</html> {% endcomment %}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Chatterly Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/libsodium-wrappers/0.4.8/sodium.min.js"></script>
+  
+</head>
+<body class="h-screen flex overflow-hidden bg-gray-50">
+  <!-- Sidebar/nav omitted for brevity -->
+  <div class="flex-1 flex">
+    <!-- Contacts panel -->
+    <div class="w-80 bg-white border-r">
+      <div class="p-4 border-b"><input id="search" type="text" placeholder="Search…" class="w-full pl-3 py-2 border rounded"/></div>
+      <ul id="userList" class="flex-1 overflow-y-auto"></ul>
+    </div>
+    <!-- Chat area -->
+    <div class="flex-1 flex flex-col bg-gray-100">
+      <div id="welcome" class="flex-1 flex items-center justify-center">
+        <h2 class="text-gray-400 text-2xl">Welcome to the Chatterly chat web application</h2>
+      </div>
+      <div id="chatWindow" class="flex-1 flex flex-col h-full hidden">
+        <div id="header" class="flex-none p-4 bg-white border-b flex items-center">
+          <img id="avatar" class="w-10 h-10 rounded-full mr-3"/><h3 id="name" class="font-semibold"/>
+        </div>
+        <div id="msgs" class="flex-1 p-4 overflow-y-auto space-y-4 bg-white"></div>
+        <div id="inputArea" class="flex-none p-4 bg-white border-t flex items-center">
+          <input id="txt" type="text" placeholder="Type a message…" class="flex-1 pl-4 py-2 border rounded-full focus:ring-indigo-300 focus:outline-none"/>
+          <button id="send" class="ml-3 text-indigo-600 text-2xl"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+(async ()=>{
+  console.log('sodium global is', typeof window.sodium);
+
+  if (typeof sodium === 'undefined') {
+    console.error('😞 libsodium didn’t load; check your network or CDN link.');
+    return;
+  }
+  await sodium.ready;
+  const userList = document.getElementById('userList'),
+        welcome  = document.getElementById('welcome'),
+        chatW    = document.getElementById('chatWindow'),
+        header   = document.getElementById('header'),
+        avatar   = document.getElementById('avatar'),
+        nameH    = document.getElementById('name'),
+        msgs     = document.getElementById('msgs'),
+        inputA   = document.getElementById('inputArea'),
+        txt      = document.getElementById('txt'),
+        sendBtn  = document.getElementById('send');
+  let box, ws, me;
+  console.log("medium");  // green
+  // 1) Load contacts:
+  const resC = await fetch('/chat/api/contacts/',{credentials:'same-origin'});
+  const contacts = await resC.json();
+  contacts.forEach(c=>{
+    const li = document.createElement('li');
+    li.className='flex items-center p-4 hover:bg-gray-50 cursor-pointer user-item';
+    li.dataset.userId=c.contact_id; 
+    li.dataset.name=c.name;
+    li.innerHTML=`<img src="https://imgcdn.stablediffusionweb.com/2024/4/17/6d71579f-ecef-42de-b83e-c0cb8179130c.jpg" class="w-10 h-10 rounded-full mr-3"/>
+                  <div class="flex-1"><p class="font-medium">${c.name}</p></div>`;
+    userList.append(li);
+  });
+  console.log("end");  // green
+
+
+  // 2) Click handler:
+  userList.onclick = async e=>{
+    const li = e.target.closest('.user-item');
+    if(!li) return;
+
+    if (ws) {
+    ws.close();
+    ws = null;
+  }
+
+    const otherId=li.dataset.userId;
+    console.log(otherId)  // green
+    // show chat UI:
+    welcome.classList.add('hidden');
+    chatW.classList.remove('hidden');
+    avatar.src='https://imgcdn.stablediffusionweb.com/2024/4/17/6d71579f-ecef-42de-b83e-c0cb8179130c.jpg';
+    nameH.textContent=li.dataset.name;
+    msgs.innerHTML='';
+
+    // 3) fetch history & key
+    const resp = await fetch(`/chat/api/with/${otherId}/`,{credentials:'same-origin'});
+    const {key,messages} = await resp.json();
+    console.log(key , messages);  // green
+    const keyBytes = sodium.from_base64(key);
+    console.log(keyBytes)  // green
+
+    // build box functions
+    const secretbox = sodium.crypto_secretbox_easy,
+          openbox   = sodium.crypto_secretbox_open_easy,
+          NONCEBYTES= sodium.crypto_secretbox_NONCEBYTES;
+
+    console.log(secretbox);   // green
+    console.log(openbox);   // green
+    console.log(NONCEBYTES);   // green
+
+    // 4) decrypt + render history
+    messages.forEach(m=>{
+      const cb = sodium.from_base64(m.cipher);
+      console.log("cb : " , cb);
+      const nonce = cb.slice(0,NONCEBYTES),
+            ct    = cb.slice(NONCEBYTES);
+      const pt = openbox(ct,nonce,keyBytes);
+      append(m.sender==otherId, sodium.to_string(pt));
+    });
+
+    // 5) open websocket
+    ws=new WebSocket(`ws://${window.location.host}/ws/chat/${otherId}/`); 
+    ws.onmessage = e=>{
+      const ev=JSON.parse(e.data);
+      const cb = sodium.from_base64(ev.cipher);
+      const nonce=cb.slice(0,NONCEBYTES),ct=cb.slice(NONCEBYTES);
+      const pt = openbox(ct,nonce,keyBytes);
+      append(ev.sender==otherId, sodium.to_string(pt));
+    };
+  };
+
+  // 6) send
+  sendBtn.onclick=()=>{
+    if(!ws||ws.readyState!==WebSocket.OPEN) return;
+    const text=txt.value.trim();
+    if(!text) return;
+    ws.send(JSON.stringify({text,ts:Date.now()}));  
+    txt.value='';
+  };
+
+  function append(incoming, text){
+    const w=document.createElement('div');
+    w.className='flex '+(incoming?'justify-start':'justify-end');
+    const b=document.createElement('div');
+    b.className='max-w-xs bg-white p-3 rounded-lg shadow';
+    b.textContent=text;
+    w.append(b);
+    msgs.append(w);
+    msgs.scrollTop=msgs.scrollHeight;
+  }
+})();
+</script>
+
+</body>
+</html>
+
+

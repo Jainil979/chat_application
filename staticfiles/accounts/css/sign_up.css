@@ -1,0 +1,48 @@
+.gradient-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.glass-effect {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.input-focus:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.15);
+}
+
+.floating-element {
+    animation: float 4s ease-in-out infinite;
+}
+
+.floating-element:nth-child(2) {
+    animation-delay: -1.5s;
+}
+
+.floating-element:nth-child(3) {
+    animation-delay: -3s;
+}
+
+.form-container {
+    animation: bounceIn 0.8s ease-out forwards;
+}
+
+.password-strength {
+    height: 4px;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.strength-weak {
+    background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
+}
+
+.strength-medium {
+    background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
+}
+
+.strength-strong {
+    background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+}

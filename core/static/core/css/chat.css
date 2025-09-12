@@ -1,0 +1,438 @@
+.glass-effect {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.chat-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+    overscroll-behavior: contain;
+    scroll-behavior: smooth;
+}
+
+
+.chat-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.5);
+    border-radius: 3px;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.8);
+}
+
+.typing-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #6366f1;
+    animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.typing-indicator:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes typing {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.message-bubble {
+    max-width: 75%;
+    word-wrap: break-word;
+}
+
+.sidebar-transition {
+    transition: all 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+    .message-bubble {
+        max-width: 85%;
+    }
+}
+
+
+
+/* Custom CSS to fix scrolling issues */
+.user-list-container {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: scroll-position;
+}
+
+.user-item {
+    contain: layout style paint;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.user-content {
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.user-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.user-email {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+/* Smooth scrolling */
+.smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent text jumping */
+.user-avatar {
+    flex-shrink: 0;
+    transform: translateZ(0);
+}
+
+.user-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.selected-members-container {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: scroll-position;
+}
+
+.selected-member-item {
+    contain: layout style paint;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+
+
+/* Profile picture hover effects */
+.profile-picture-container {
+    position: relative;
+}
+
+.profile-picture-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile-picture-container:hover .profile-picture-overlay {
+    opacity: 1;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
+}
+
+
+.emoji-item {
+    transition: all 0.2s ease;
+    border-radius: 8px;
+}
+
+.emoji-item:hover {
+    background-color: #f3f4f6;
+    transform: scale(1.2);
+}
+
+.category-tab {
+    transition: all 0.2s ease;
+}
+
+.category-tab.active {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+}
+
+.emoji-picker {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+
+
+.attachment-dropdown {
+    display: none;
+}
+
+.attachment-dropdown.active {
+    display: block;
+}
+
+.mobile-attachment-panel {
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.mobile-attachment-panel.active {
+    transform: translateY(0);
+}
+
+
+
+
+
+
+
+
+/* Video Call Modal */
+.video-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    display: none;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.remote-video {
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+    border-radius: 12px;
+    background: #1f2937;
+}
+
+.local-video {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid white;
+    background: #374151;
+}
+
+.call-controls {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.control-btn {
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.3s;
+}
+
+.control-btn.end-call {
+    background: #dc2626;
+    color: white;
+}
+
+.control-btn.end-call:hover {
+    background: #b91c1c;
+}
+
+.control-btn.mute {
+    background: #374151;
+    color: white;
+}
+
+.control-btn.mute.active {
+    background: #dc2626;
+}
+
+.control-btn.video-toggle {
+    background: #374151;
+    color: white;
+}
+
+.control-btn.video-toggle.active {
+    background: #dc2626;
+}
+
+/* Incoming Call Modal */
+.incoming-call {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    display: none;
+    text-align: center;
+    min-width: 300px;
+}
+
+.incoming-call h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #111827;
+}
+
+.incoming-call p {
+    margin: 0 0 20px 0;
+    color: #6b7280;
+}
+
+.call-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.accept-btn,
+.decline-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.accept-btn {
+    background: #059669;
+    color: white;
+}
+
+.accept-btn:hover {
+    background: #047857;
+}
+
+.decline-btn {
+    background: #dc2626;
+    color: white;
+}
+
+.decline-btn:hover {
+    background: #b91c1c;
+}
+
+/* Status Messages */
+.status-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #1f2937;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    z-index: 1002;
+    display: none;
+}
+
+/* Connection Status */
+.connection-status {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.connection-status.connected {
+    background: rgba(5, 150, 105, 0.9);
+}
+
+.connection-status.connecting {
+    background: rgba(245, 158, 11, 0.9);
+}
+
+.connection-status.disconnected {
+    background: rgba(220, 38, 38, 0.9);
+}
+
+
+
