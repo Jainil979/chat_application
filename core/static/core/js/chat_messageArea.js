@@ -487,40 +487,6 @@ async function sendMessage() {
   if (!socket || socket.readyState !== WebSocket.OPEN) return;
 
 
-  // 0) If we have an in-memory audio recording ready…
-  // if (audioChunks && audioChunks.length) {
-  //   try {
-  //     // build the blob
-  //     const blob = new Blob(audioChunks, { type: 'audio/webm' });
-  //     const form = new FormData();
-  //     form.append('file', blob, 'voice.webm');
-
-  //     // upload to your existing attachment endpoint
-  //     const resp = await fetch(`/chat/api/rooms/${currentChatId}/upload/`, {
-  //       method: 'POST',
-  //       credentials: 'same-origin',
-  //       body: form
-  //     });
-  //     if (!resp.ok) throw new Error('Audio upload failed');
-  //     const { url, timestamp } = await resp.json();
-
-  //     // broadcast via WebSocket
-  //     socket.send(JSON.stringify({
-  //       text: "",               // no plaintext
-  //       attachment_url: url,
-  //       timestamp
-  //     }));
-
-  //     // clear your audio buffer & UI
-  //     audioChunks = [];
-  //   } catch (err) {
-  //     console.error("Voice message failed:", err);
-  //   }
-
-  //   return;
-  // }
-
-
   // 1) If you have selected files, send them first
   if (selectedFiles && selectedFiles.length) {
     // for each file, read & send
@@ -798,12 +764,33 @@ async function loadContacts() {
 
       toggleChatArea(true);
 
-      window.OTHER_USER_ID = currentChatId;
+      // window.OTHER_USER_ID = currentChatId;
+
+
+      window.OTHER_USER_ID = uid;
+      window.OTHER_USER_NAME = item.dataset.name;
+      window.OTHER_USER_AVATAR = item.dataset.avatar;
+    
+      // Update video call manager with current user info
+      if (window.videoCallManager) {
+          window.videoCallManager.otherUserId = uid;
+          window.videoCallManager.otherUserName = item.dataset.name;
+          window.videoCallManager.otherUserAvatar = item.dataset.avatar;
+      }
+
+      // if(window.audioCallManager){
+      //   window.audioCallManager.otherUserId = uid;
+      //   window.audioCallManager.otherUserName = item.dataset.name;
+      //   window.audioCallManager.otherUserAvatar = item.dataset.avatar;
+      // }
+
 
       // Initialize audio recorder
       window.audioRecorder = new AudioRecorder();
 
-      window.videoCallManager.otherUserId = window.OTHER_USER_ID;
+
+
+      // window.videoCallManager.otherUserId = window.OTHER_USER_ID;
 
 
       // window.videoCallManager = new VideoCallManager();

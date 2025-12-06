@@ -41,8 +41,10 @@
             };
         </script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-        <link rel="stylesheet" href="{% static 'core/css/chat.css' %}">
+        <link rel="stylesheet" href="{% static 'core/css/chat1.css' %}">
     </head>
+
+
     <body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-cyan-50 min-h-screen">
         <!-- Header -->
         <header class="bg-white shadow-sm border-b border-gray-200 fixed w-full top-0 z-50">
@@ -73,6 +75,8 @@
                 </div>
             </div>
         </header>
+
+
         <div class="flex h-screen pt-16">
             <!-- Sidebar -->
             <div id="sidebar" class="sidebar-transition w-80 bg-white border-r border-gray-200 flex flex-col fixed lg:relative h-full z-40 -translate-x-full lg:translate-x-0">
@@ -112,16 +116,22 @@
                             <p id="currentChatStatus" class="text-sm text-green-600">Online</p>
                         </div>
                     </div>
+
                     <div class="flex items-center space-x-2">
-                        <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                        
+                        <button id="audioCallBtn" class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
                         <i class="fas fa-phone"></i>
                         </button>
+                        
                         <button id="videoCallBtn" class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
                         <i class="fas fa-video"></i>
                         </button>
+                        
+                        
                         <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
                         <i class="fas fa-ellipsis-v"></i>
                         </button>
+
                     </div>
                 </div>
 
@@ -174,16 +184,10 @@
                                 <h4 class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Selected Files</h4>
                                 <div id="fileList" class="space-y-2"></div>
                             </div>
-                            <!-- Send Button -->
-                            {% comment %} 
-                            <div id="sendFilesContainer" class="hidden mt-4">
-                                <button id="sendFilesBtn" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                                <i class="fas fa-paper-plane mr-2"></i>Send Files
-                                </button>
-                            </div>
-                            {% endcomment %}
+                        
                         </div>
                     </div>
+
                     <!-- Message Input -->
                     <div class="flex items-center space-x-3">
                         <button id="attachmentBtn" class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
@@ -320,128 +324,39 @@
             </div>
 
             <!-- Video Call Modal -->
-                    <div id="videoModal" class="video-modal">
-                        <div class="video-container">
-                            <div class="connection-status" id="connectionStatus"></div>
-                            <video id="remoteVideo" class="remote-video" autoplay playsinline></video>
-                            <div><video id="localVideo" class="local-video" autoplay playsinline></video></div>
-                            <div class="call-controls">
-                                <button id="muteBtn" class="control-btn mute">
-                                <i class="fas fa-microphone"></i>
-                                </button>
-                                <button id="videoToggleBtn" class="control-btn video-toggle">
-                                <i class="fas fa-video"></i>
-                                </button>
-                                <button id="endCallBtn" class="control-btn end-call">
-                                <i class="fas fa-phone-slash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Incoming Call Modal -->
-                    <div id="incomingCallModal" class="incoming-call">
-                        <h3>Incoming Video Call</h3>
-                        <p id="callerName">Unknown User</p>
-                        <div class="call-actions">
-                            <button id="acceptCallBtn" class="accept-btn">Accept</button>
-                            <button id="declineCallBtn" class="decline-btn">Decline</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Status Message -->
-                    <div id="statusMessage" class="status-message"></div>
-
-        </div>
-
-
-        <!-- Profile Settings Modal -->
-        {% comment %} <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto no-scrollbar">
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-2xl font-bold text-gray-900">Profile Settings</h3>
-                        <button id="closeProfile" class="text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-times"></i>
+            <div id="videoModal" class="video-modal">
+                <div class="video-container">
+                    <div class="connection-status" id="connectionStatus"></div>
+                    <video id="remoteVideo" class="remote-video" autoplay playsinline></video>
+                    <div><video id="localVideo" class="local-video" autoplay playsinline></video></div>
+                    <div class="call-controls">
+                        <button id="muteBtn" class="control-btn mute">
+                        <i class="fas fa-microphone"></i>
+                        </button>
+                        <button id="videoToggleBtn" class="control-btn video-toggle">
+                        <i class="fas fa-video"></i>
+                        </button>
+                        <button id="endCallBtn" class="control-btn end-call">
+                        <i class="fas fa-phone-slash"></i>
                         </button>
                     </div>
-                    <!-- Profile Picture -->
-                    <div class="text-center mb-6">
-                        <div class="relative inline-block">
-                            <div id="profilePicture" class="w-24 h-24 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 cursor-pointer hover:shadow-lg transition-all duration-300 group relative" onclick="document.getElementById('profileImageInput').click()">
-                                <i id="cameraIcon" class="fas fa-camera text-white text-2xl group-hover:scale-110 transition-transform duration-300"></i>
-                                <!-- Remove button (hidden by default) -->
-                                <button type="button" id="removeProfileBtn" onclick="event.stopPropagation(); removeProfilePicture()" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center text-white text-xs transition-colors hidden">
-                                <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                            <input type="file" id="profileImageInput" accept="image/*" class="hidden" onchange="handleProfileImageChange(event)" />
-                        </div>
-                        <br>
-                        <button type="button" onclick="document.getElementById('profileImageInput').click()" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm transition-colors">
-                        Change Profile Picture
-                        </button>
-                    </div>
-                    <!-- Profile Form -->
-                    <form class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                            <input type="text" value="" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-colors" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                            <select class="status-option w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
-                                <option>Available</option>
-                                <option>Busy</option>
-                                <option>Do Not Disturb</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">About</label>
-                            <textarea rows="3" placeholder="Tell others about yourself..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-colors"></textarea>
-                        </div>
-                        <!-- Notification Settings -->
-                        <div class="space-y-3 pt-4 border-t border-gray-200">
-                            <h4 class="font-medium text-gray-900">Notifications</h4>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">Show online status</span>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="sr-only peer" checked />
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                                </label>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">Show last seen status</span>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="sr-only peer" checked />
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                                </label>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-700">Show typing status</span>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="sr-only peer" checked />
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                                </label>
-                            </div>
-                        </div>
-                        <!-- Action Buttons -->
-                        <div class="flex space-x-3 pt-6">
-                            <button type="button" class="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-4 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                            Save Changes
-                            </button>
-                            <button type="button" id="profileResetBtn" class="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white py-2 px-4 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                            Reset
-                            </button>
-                            <button type="button" class="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors">
-                            Cancel
-                            </button>
-                        </div>
-                    </form>
+                </div>                  
+            </div>
+
+            <!-- Incoming Call Modal -->
+            <div id="incomingCallModal" class="incoming-call">
+                <h3>Incoming Video Call</h3>
+                <p id="callerName">Unknown User</p>
+                <div class="call-actions">
+                    <button id="acceptCallBtn" class="accept-btn">Accept</button>
+                    <button id="declineCallBtn" class="decline-btn">Decline</button>
                 </div>
             </div>
-        </div> {% endcomment %}
+                    
+            <!-- Status Message -->
+            <div id="statusMessage" class="status-message"></div>
 
+        </div>
 
 
 
@@ -520,11 +435,9 @@
 
 
 
-
-
-
         <!-- Sidebar Overlay for Mobile -->
         <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+
 
         <!-- 3. Add User Modal -->
         <div id="addUserModal"
@@ -569,6 +482,9 @@
                 </div>
             </div>
         </div>
+
+
+
         <!-- Modal Container -->
         <div id="groupModal"
             class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
@@ -657,6 +573,124 @@
 
 
 
+        <!-- Audio Call Modal -->
+        <div id="audioCallModal" class="audio-call-modal">
+            <div class="audio-call-container">
+                <!-- Call Header -->
+                <div class="call-header">
+                    <div class="caller-info">
+                        <div id="audioCallAvatar" class="call-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="caller-details">
+                            <h3 id="audioCallName">John Doe</h3>
+                            <div id="audioCallStatus" class="call-status">Calling...</div>
+                            <div id="callDuration" class="call-duration">00:00</div>
+                        </div>
+                    </div>
+                    <button id="audioCallClose" class="call-close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Audio Visualization -->
+                <div class="audio-visualization">
+                    <div class="sound-waves">
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                        <div class="wave"></div>
+                    </div>
+                    <div class="audio-level">
+                        <div id="audioLevelBar" class="audio-level-bar"></div>
+                    </div>
+                </div>
+
+                <!-- Call Controls -->
+                <div class="audio-call-controls">
+                    <button id="audioMuteBtn" class="control-btn mute">
+                        <i class="fas fa-microphone"></i>
+                        <span class="tooltip">Mute</span>
+                    </button>
+                    <button id="audioSpeakerBtn" class="control-btn speaker">
+                        <i class="fas fa-volume-up"></i>
+                        <span class="tooltip">Speaker</span>
+                    </button>
+                    <button id="endAudioCallBtn" class="control-btn end-call">
+                        <i class="fas fa-phone-slash"></i>
+                        <span class="tooltip">End Call</span>
+                    </button>
+                    <button id="audioKeypadBtn" class="control-btn keypad">
+                        <i class="fas fa-th"></i>
+                        <span class="tooltip">Keypad</span>
+                    </button>
+                    <button id="audioHoldBtn" class="control-btn hold">
+                        <i class="fas fa-pause"></i>
+                        <span class="tooltip">Hold</span>
+                    </button>
+                </div>
+
+                <!-- Audio Device Selection -->
+                <div class="audio-device-selector">
+                    <select id="audioInputSelect" class="device-select">
+                        <option>Select Microphone</option>
+                    </select>
+                    <select id="audioOutputSelect" class="device-select">
+                        <option>Select Speaker</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incoming Audio Call Modal -->
+        <div id="incomingAudioCallModal" class="incoming-audio-call">
+            <div class="incoming-call-container">
+                <div class="caller-avatar">
+                    <div id="incomingAudioCallAvatar" class="avatar-circle">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <h3 id="incomingAudioCallName">Incoming Call</h3>
+                <p id="incomingAudioCallType">Voice Call</p>
+                
+                <div class="incoming-call-actions">
+                    <button id="declineAudioCallBtn" class="decline-btn">
+                        <i class="fas fa-times"></i>
+                        Decline
+                    </button>
+                    <button id="acceptAudioCallBtn" class="accept-btn">
+                        <i class="fas fa-phone"></i>
+                        Accept
+                    </button>
+                </div>
+                
+                <div class="call-animation">
+                    <div class="ringing-animation">
+                        <div class="ring"></div>
+                        <div class="ring"></div>
+                        <div class="ring"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call Status Notification -->
+        <div id="callStatusNotification" class="call-status-notification">
+            <div class="notification-content">
+                <i id="callStatusIcon" class="fas fa-phone"></i>
+                <span id="callStatusText"></span>
+            </div>
+        </div>
+
+
+
+
+
+
         <!-- Success Modal -->
         <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden flex items-center justify-center p-4">
             <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full animate-slide-up">
@@ -672,6 +706,7 @@
                 </div>
             </div>
         </div>
+
 
         <!-- Error Modal -->
         <div id="errorModal" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden flex items-center justify-center p-4">
@@ -741,24 +776,20 @@
                 </button>
             </div>
         </div>
+        
+        
         <!-- Overlay for mobile -->
         <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+        
         <script src="https://cdnjs.cloudflare.com/ajax/libs/libsodium-wrappers/0.4.8/sodium.min.js"></script>
+        
+
         <script>
-            // now every script on the page can read `CURRENT_USER_ID`
             window.CURRENT_USERNAME = "{{ request.user.name|default:'null' }}"; 
             window.CURRENT_USER_ID = {{ request.user.id }}
         </script>
-        <!-- in your base template, before your own JS -->
-        {% comment %} <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.min.js"></script> {% endcomment %}
-        <!-- before your own chat JS -->
-        {% comment %} <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.umd.min.js"></script>  {% endcomment %}
-        <!-- head (or right before your own chat_emojis.js) -->
-        {% comment %} <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.umd.min.js"></script> {% endcomment %}
-        <!-- load the UMD build (v4.x) -->
-        {% comment %} <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2"></script> {% endcomment %}
-        {% comment %} <script src="https://unpkg.com/@joeattardi/emoji-button@4/dist/index.umd.min.js"></script> {% endcomment %}
-        {% comment %} <script src="https://cdn.jsdelivr.net/npm/picmo"></script> {% endcomment %}
+        
+
         <script src="{% static 'core/js/chat.js' %}"></script>
         <script src="{% static 'core/js/chat_addUserModel.js' %}"></script>
         <script src="{% static 'core/js/chat_all_attachments.js' %}"></script>
@@ -766,6 +797,56 @@
         <script src="{% static 'core/js/chat_profile.js' %}"></script>
         <script src="{% static 'core/js/chat_emojis.js' %}"></script>
         <script src="{% static 'core/js/chat_attachment.js' %}"></script>
-        <script src="{% static 'core/js/final_chat_video.js' %}"></script> 
+
+        
+        
+        <script src="{% static 'core/js/final_chat_video1.js' %}"></script> 
+        <script src="{% static 'core/js/audio_call_manager.js' %}"></script>
+
+        
+
+
+
+        <!-- Add this script to integrate with existing WebSocket -->
+        <script>
+            // Integrate audio call manager with existing WebSocket
+            document.addEventListener('DOMContentLoaded', function() {
+                // This assumes you have a global WebSocket connection
+                // If not, you might need to modify this
+                
+                // Check for existing WebSocket connection every second
+                const checkWebSocket = setInterval(() => {
+                    if (window.audioCallManager && window.videoCallManager && window.videoCallManager.socket) {
+                        clearInterval(checkWebSocket);
+                        
+                        // Override the video call manager's message handler to also handle audio
+                        const originalOnMessage = window.videoCallManager.socket.onmessage;
+                        window.videoCallManager.socket.onmessage = function(event) {
+                            try {
+                                const msg = JSON.parse(event.data);
+                                
+                                // Check if it's an audio call message
+                                if (msg.type && msg.type.startsWith('audio-')) {
+                                    if (window.audioCallManager) {
+                                        window.audioCallManager.handleSignal(msg);
+                                    }
+                                } else {
+                                    // Pass to original handler for video calls
+                                    if (originalOnMessage) {
+                                        originalOnMessage.call(this, event);
+                                    }
+                                }
+                            } catch (error) {
+                                console.error('Error in combined message handler:', error);
+                            }
+                        };
+                        
+                        console.log('Audio call signaling integrated');
+                    }
+                }, 1000);
+            });
+        </script>
+
+    
     </body>
 </html>

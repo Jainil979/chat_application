@@ -5,7 +5,7 @@ from chat.views import *
 urlpatterns = [
     path('dashboard/' , ChatUI.as_view() , name='chat_ui'),
     path('profile/' , ProfilePageView.as_view() , name='profile_page'),
-    path('emoji/' , emoji , name='emoji'),
+    # path('emoji/' , emoji , name='emoji'),
     path('ws-test/', TemplateView.as_view(template_name='chat/ws_test.html'), name='ws_test'),
     path('api/contacts/', ContactList.as_view(), name='chat_contacts'),
     path("api/profile/", ProfileAPIView.as_view(), name="api_profile"),

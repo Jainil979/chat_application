@@ -10,6 +10,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active    = models.BooleanField(default=True)
     is_staff     = models.BooleanField(default=False)
     date_joined  = models.DateTimeField(auto_now_add=True)
+    profile_completed = models.BooleanField(default=False) 
 
     objects = CustomUserManager()
 
@@ -31,6 +32,14 @@ class Profile(models.Model):
         DO_NOT_DISTURB  = 'do_not_disturb', 'Do Not Disturb'
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
+
+
+    # last_seen = models.DateTimeField(
+    #     null=True,
+    #     blank=True,
+    #     help_text="Last time the user was active"
+    # )
+
 
     avatar = models.ImageField(
         upload_to='avatars/%Y/%m/%d/',

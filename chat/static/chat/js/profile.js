@@ -123,11 +123,11 @@ const fullNameInput = document.getElementById('fullName');
 const avatarInput = document.getElementById('profilePictureInput');
 const avatarImg = document.getElementById('profileImage');
 const avatarIcon = document.getElementById('profileIcon');
-const statusOptions = document.querySelectorAll('.status-option');
+// const statusOptions = document.querySelectorAll('.status-option');
 const aboutTextarea = document.getElementById('about');
 const toggleOnline = document.querySelector('[data-setting="onlineStatus"]');
 const toggleLastSeen = document.querySelector('[data-setting="lastSeen"]');
-const toggleTyping = document.querySelector('[data-setting="typingStatus"]');
+// const toggleTyping = document.querySelector('[data-setting="typingStatus"]');
 const successMessage = document.getElementById('successMessage');
 
 // --- PREFILL ON LOAD ---
@@ -186,16 +186,16 @@ avatarInput.addEventListener('change', e => {
 
 
 // --- STATUS SELECTION ---
-statusOptions.forEach(opt => {
-    opt.addEventListener('click', () => {
-        statusOptions.forEach(o => o.classList.remove('selected'));
-        opt.classList.add('selected');
-    });
-});
+// statusOptions.forEach(opt => {
+//     opt.addEventListener('click', () => {
+//         statusOptions.forEach(o => o.classList.remove('selected'));
+//         opt.classList.add('selected');
+//     });
+// });
 
 
 // Set default status
-document.querySelector('.status-option[data-status="available"]').classList.add('selected');
+// document.querySelector('.status-option[data-status="available"]').classList.add('selected');
 
 
 // --- ABOUT CHAR COUNT (max 150) ---
@@ -208,7 +208,7 @@ aboutTextarea.addEventListener('input', () => {
 
 
 // --- TOGGLE SWITCHES ---
-[toggleOnline, toggleLastSeen, toggleTyping].forEach(tog =>
+[toggleOnline, toggleLastSeen].forEach(tog =>
     tog.addEventListener('click', () => tog.classList.toggle('active'))
 );
 
@@ -264,14 +264,14 @@ form.addEventListener('submit', async e => {
     // 2) name
     fd.append('name', fullNameInput.value.trim());
     // 3) presence
-    const pres = document.querySelector('.status-option.selected')?.dataset.status;
-    fd.append('presence', pres || 'available');
+    // const pres = document.querySelector('.status-option.selected')?.dataset.status;
+    // fd.append('presence', pres || 'available');
     // 4) about_me
     fd.append('about_me', aboutTextarea.value.trim());
     // 5) toggles
     fd.append('show_online', toggleOnline.classList.contains('active'));
     fd.append('show_last_seen', toggleLastSeen.classList.contains('active'));
-    fd.append('show_typing', toggleTyping.classList.contains('active'));
+    // fd.append('show_typing', toggleTyping.classList.contains('active'));
 
     try {
 
@@ -296,11 +296,11 @@ form.addEventListener('submit', async e => {
                 switch (field) {
                     case 'name': ref = fullNameInput; break;
                     case 'avatar': ref = avatarInput; break;
-                    case 'presence': ref = document.querySelector('.status-option.selected'); break;
+                    // case 'presence': ref = document.querySelector('.status-option.selected'); break;
                     case 'about_me': ref = aboutTextarea; break;
                     case 'show_online': ref = toggleOnline; break;
                     case 'show_last_seen': ref = toggleLastSeen; break;
-                    case 'show_typing': ref = toggleTyping; break;
+                    // case 'show_typing': ref = toggleTyping; break;
                 }
                 if (ref) {
                     const errp = document.createElement('p');

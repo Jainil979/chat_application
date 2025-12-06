@@ -9,14 +9,14 @@ class CustomUserAdmin(UserAdmin):
     list_filter  = ('is_staff', 'is_active')
     fieldsets = (
         (None, {'fields': ('email', 'password',)}),
-        ('Personal Info', {'fields': ('name',)}),
+        ('Personal Info', {'fields': ('name','profile_completed')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
         ('Dates', {'fields': ('last_login',)}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('name', 'email', 'password1', 'password2', 'is_staff', 'is_active'),
+            'fields': ('name', 'email', 'password1', 'profile_completed' ,'password2', 'is_staff', 'is_active'),
         }),
     )
     search_fields   = ('email', 'name')

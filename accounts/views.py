@@ -75,6 +75,7 @@ class LoginAPIView(APIView):
     —> sets HttpOnly access_token + refresh_token cookies on success,
        returns 400 + {"detail":"Invalid credentials"} on failure.
     """
+    print("yes")
     permission_classes = [AllowAny]
     renderer_classes   = [JSONRenderer]
 
@@ -87,9 +88,10 @@ class LoginAPIView(APIView):
         data    = serializer.validated_data
         access  = data['access']
         refresh = data['refresh']
+        user = data['user']
 
         # build a simple response
-        resp = Response({"detail":"Login successful"}, status=status.HTTP_200_OK)
+        resp = Response({"detail":"Login successful" , "profile_completed": user.profile_completed}, status=status.HTTP_200_OK)
 
         # set them in secure HttpOnly cookies
         resp.set_cookie(
@@ -121,7 +123,7 @@ class LogoutView(APIView):
       - Redirects to home
     """
     # authentication_classes = [CookieJWTAuthentication]
-    # permission_classes     = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         # 1) Blacklist the refresh token (if present)

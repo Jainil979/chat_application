@@ -46,6 +46,84 @@ function getCookie(name) {
 
 
 // Handle form submission
+// document.getElementById('loginForm').addEventListener('submit', async function (e) {
+//     e.preventDefault();
+
+//     const submitButton = e.target.querySelector('button[type="submit"]');
+//     const loginText = document.getElementById('loginText');
+//     const loginIcon = document.getElementById('loginIcon');
+//     const loginSpinner = document.getElementById('loginSpinner');
+
+//     submitButton.disabled = true;
+
+//     // grab the credentials
+//     const formData = new FormData(e.target);
+//     const payload = {
+//         email: formData.get('email').toLowerCase(),
+//         password: formData.get('password')
+//     };
+
+//     let isValid = true;
+
+//     if (!validateEmail(payload.email)) {
+//         showError('email', true);
+//         isValid = false;
+//     } else {
+//         showError('email', false);
+//     }
+
+//     if (!isValid) {
+//         return;
+//     }
+
+//     try {
+//         // show loading state
+//         // submitButton.disabled = true;
+//         loginText.textContent = 'Logging In ';
+//         loginIcon.classList.add('hidden');
+//         loginSpinner.classList.remove('hidden');
+
+//         const csrftoken = getCookie('csrftoken');
+
+//         const resp = await fetch('/api/auth/login/', {
+//             method: 'POST',
+//             credentials: 'same-origin',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-CSRFToken': csrftoken,                          // include CSRF header
+//             },
+//             body: JSON.stringify(payload),
+//         });
+
+//         if (resp.ok) {
+//             showMessage('Successfully logged in! Redirecting...', 'success');
+
+//             // redirect to your chat dashboard:
+//             setTimeout(() => {
+//                 window.location.href = '/chat/profile/';
+//             }, 1000);
+
+//         } else if (resp.status === 401 || resp.status === 400) {
+//             // invalid credentials
+//             showMessage('Invalid email or password', 'error');
+//         } else {
+//             showMessage('Unexpected server response. Please try again.', 'error');
+//         }
+//     } catch (err) {
+//         showMessage('Network error. Please check your connection.', 'error');
+//     } finally {
+//         // restore button
+//         submitButton.disabled = false;
+//         loginText.textContent = 'Login';
+//         loginIcon.classList.remove('hidden');
+//         loginSpinner.classList.add('hidden');
+//     }
+// });
+
+
+
+
+// Handle form submission
 document.getElementById('loginForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -73,52 +151,70 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     }
 
     if (!isValid) {
+        submitButton.disabled = false;
         return;
     }
 
     try {
         // show loading state
-        // submitButton.disabled = true;
         loginText.textContent = 'Logging In ';
         loginIcon.classList.add('hidden');
         loginSpinner.classList.remove('hidden');
 
         const csrftoken = getCookie('csrftoken');
 
+        console.log(payload);
+        console.log(csrftoken);
+
         const resp = await fetch('/api/auth/login/', {
             method: 'POST',
             credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,                          // include CSRF header
+                'X-CSRFToken': csrftoken,
             },
             body: JSON.stringify(payload),
         });
 
         if (resp.ok) {
+            const data = await resp.json();
             showMessage('Successfully logged in! Redirecting...', 'success');
 
-            // redirect to your chat dashboard:
+            // Redirect based on profile completion status
+            let redirectUrl;
+            if (data.profile_completed) {
+                redirectUrl = '/chats/';  // Go to chats if profile is complete
+            } else {
+                redirectUrl = '/chat/profile/';  // Go to profile if not complete
+            }
+
+            // alert(redirectUrl);
             setTimeout(() => {
-                window.location.href = '/chat/profile/';
+                window.location.href = redirectUrl;
             }, 1000);
 
         } else if (resp.status === 401 || resp.status === 400) {
             // invalid credentials
             showMessage('Invalid email or password', 'error');
+            submitButton.disabled = false;
         } else {
             showMessage('Unexpected server response. Please try again.', 'error');
+            submitButton.disabled = false;
         }
     } catch (err) {
         showMessage('Network error. Please check your connection.', 'error');
+        submitButton.disabled = false;
     } finally {
         // restore button
-        submitButton.disabled = false;
         loginText.textContent = 'Login';
         loginIcon.classList.remove('hidden');
         loginSpinner.classList.add('hidden');
     }
 });
+
+
+
+
 
 
 // Enhanced message function with awesome design
