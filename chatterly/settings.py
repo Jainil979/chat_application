@@ -343,8 +343,14 @@ STORAGES = {
 
 
 # Media files (user uploaded content)
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Use Pathlib style; if you want absolute /media root on server, set MEDIA_ROOT env var
+MEDIA_ROOT = os.environ.get('MEDIA_ROOT', str(BASE_DIR / 'media'))
+
+os.makedirs(MEDIA_ROOT, exist_ok=True)
+
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
