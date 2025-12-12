@@ -184,7 +184,7 @@ class LogoutViewTest(APITestCase):
     def test_logout_without_tokens(self):
         """Test logout when no tokens are present"""
         response = self.client.post(self.logout_url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
 
 class ForgotPasswordViewsTest(APITestCase):
