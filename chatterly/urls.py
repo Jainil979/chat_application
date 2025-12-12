@@ -20,6 +20,7 @@ urlpatterns = [
     path('api/auth/password_reset_confirm/' , PasswordResetConfirmAPIView.as_view(), name='api_password_reset')
 ]
 
-if settings.DEBUG:
-    # only for development: serve media files through Django
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG:
+#     # only for development: serve media files through Django
+#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
